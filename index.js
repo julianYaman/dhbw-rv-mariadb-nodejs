@@ -9,10 +9,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static('public'));
 
-// expose an endpoint "people"
 app.get('/', async (req, res) => {
     res.render('index')
 })
+
+// Disclaimer: I know these names are very bad but idc.
 
 app.get('/autor-auswahl', async (req, res) => {
     res.render('autor', {data: false, searched: false, query: false})
@@ -133,6 +134,7 @@ app.get('/buecher', async (req, res) => {
     }
 });
 
+// Start the thing!
 app.use(function(req, res) {
     res.status(404).redirect('https://yaman.pro/');
 });
