@@ -2,6 +2,7 @@ const express = require('express')
 const pool = require('./db')
 const app = express()
 const port = 8080
+const { PerformanceObserver, performance } = require('perf_hooks');
 
 app.set('view engine', 'ejs');
 const bodyParser = require('body-parser');
@@ -16,12 +17,12 @@ app.get('/', async (req, res) => {
 // Disclaimer: I know these names are very bad but idc.
 
 app.get('/autor-auswahl', async (req, res) => {
-    res.render('autor', {data: false, searched: false, query: false})
+    res.render('autor', {data: false, searched: false, query: false, tookTime: false})
 });
 
 app.post('/autor-auswahl-query', async (req, res) => {
     let conn;
-    console.log(conn)
+    const begin = performance.now();
     try {
         // establish a connection to MariaDB
         conn = await pool.getConnection();
@@ -40,8 +41,12 @@ app.post('/autor-auswahl-query', async (req, res) => {
         // execute the query and set the result to a new variable
         let rows = await conn.query(query);
 
+        const finished = performance.now();
+        let tookTime = finished - begin;
+        tookTime = tookTime.toFixed(4)
+
         // return the results
-        res.render('autor', {data: rows, searched: vorname + ' ' + nachname, query: query})
+        res.render('autor', {data: rows, searched: vorname + ' ' + nachname, query: query, tookTime: tookTime})
     } catch (err) {
         res.send(err);
     } finally {
@@ -50,12 +55,12 @@ app.post('/autor-auswahl-query', async (req, res) => {
 });
 
 app.get('/titel', async (req, res) => {
-    res.render('titel', {data: false, searched: false, query: false})
+    res.render('titel', {data: false, searched: false, query: false, tookTime: false})
 });
 
 app.post('/titel-query', async (req, res) => {
     let conn;
-    console.log(conn)
+    const begin = performance.now();
     try {
         // establish a connection to MariaDB
         conn = await pool.getConnection();
@@ -71,8 +76,12 @@ app.post('/titel-query', async (req, res) => {
         // execute the query and set the result to a new variable
         let rows = await conn.query(query);
 
+        const finished = performance.now();
+        let tookTime = finished - begin;
+        tookTime = tookTime.toFixed(4)
+
         // return the results
-        res.render('titel', {data: rows, searched: titel, query: query})
+        res.render('titel', {data: rows, searched: titel, query: query, tookTime: tookTime})
     } catch (err) {
         res.send(err);
     } finally {
@@ -81,12 +90,12 @@ app.post('/titel-query', async (req, res) => {
 });
 
 app.get('/sorte', async (req, res) => {
-    res.render('sorte', {data: false, searched: null, query: false})
+    res.render('sorte', {data: false, searched: null, query: false, tookTime: false})
 });
 
 app.post('/sorte-query', async (req, res) => {
     let conn;
-    console.log(conn)
+    const begin = performance.now();
     try {
         // establish a connection to MariaDB
         conn = await pool.getConnection();
@@ -104,8 +113,12 @@ app.post('/sorte-query', async (req, res) => {
         // execute the query and set the result to a new variable
         let rows = await conn.query(query);
 
+        const finished = performance.now();
+        let tookTime = finished - begin;
+        tookTime = tookTime.toFixed(4)
+
         // return the results
-        res.render('sorte', {data: rows, searched: sorte, query: query})
+        res.render('sorte', {data: rows, searched: sorte, query: query, tookTime: tookTime})
     } catch (err) {
         res.send(err);
     } finally {
